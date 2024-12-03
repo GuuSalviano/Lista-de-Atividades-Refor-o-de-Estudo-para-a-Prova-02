@@ -1,0 +1,39 @@
+def binary_search_isbn(library_records, left, right, isbn):
+    while left <= right:
+        mid = left + (right - left) // 2
+        mid_isbn = library_records[mid]['ISBN']
+
+        # Verifica se o ISBN buscado está no ponto médio
+        if mid_isbn == isbn:
+            return mid
+
+        # Se o ISBN do ponto médio é menor, ignora a metade esquerda
+        elif mid_isbn < isbn:
+            left = mid + 1
+
+        # Se o ISBN do ponto médio é maior, ignora a metade direita
+        else:
+            right = mid - 1
+
+    # ISBN não encontrado
+    return -1
+
+# Exemplo de uso
+library_records = [
+    {"ISBN": "978-3-16-148410-0", "title": "Book A", "author": "Author A"},
+    {"ISBN": "978-1-23-456789-7", "title": "Book B", "author": "Author B"},
+    {"ISBN": "978-0-12-345678-9", "title": "Book C", "author": "Author C"},
+    {"ISBN": "978-0-12-345679-6", "title": "Book D", "author": "Author D"},
+    {"ISBN": "978-0-13-110362-7", "title": "Book E", "author": "Author E"},
+]
+
+# Lista deve estar ordenada por ISBN
+library_records.sort(key=lambda x: x['ISBN'])
+
+isbn_to_find = "978-0-12-345678-9"
+result = binary_search_isbn(library_records, 0, len(library_records) - 1, isbn_to_find)
+
+if result != -1:
+    print(f"Livro encontrado: {library_records[result]}")
+else:
+    print("ISBN não encontrado na lista")
