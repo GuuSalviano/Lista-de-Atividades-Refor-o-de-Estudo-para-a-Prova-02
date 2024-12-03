@@ -1,0 +1,68 @@
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+
+def bucket_sort(grades):
+    max_val = 100
+    size = max_val // len(grades)
+
+    buckets = [[] for _ in range(len(grades))]
+
+    for grade in grades:
+        i = grade // size
+        if i != len(grades):
+            buckets[i].append(grade)
+        else:
+            buckets[len(grades) - 1].append(grade)
+
+    for bucket in buckets:
+        insertion_sort(bucket)
+
+    sorted_grades = []
+    for bucket in buckets:
+        sorted_grades.extend(bucket)
+
+    return sorted_grades
+
+# Exemplo de uso do Bucket Sort
+grades = [88, 95, 70, 55, 68, 91, 85, 77, 60, 94, 100, 82, 89, 73]
+sorted_grades = bucket_sort(grades)
+print("Notas ordenadas:", sorted_grades)
+
+
+def interpolation_search(arr, n, x):
+    low = 0
+    high = n - 1
+
+    while low <= high and x >= arr[low] and x <= arr[high]:
+        if low == high:
+            if arr[low] == x:
+                return low
+            return -1
+
+        pos = low + int(((float(high - low) / (arr[high] - arr[low])) * (x - arr[low])))
+
+        if arr[pos] == x:
+            return pos
+        if arr[pos] < x:
+            low = pos + 1
+        else:
+            high = pos - 1
+
+    return -1
+
+# Exemplo de uso do Interpolation Search
+nota_procurada = 91
+resultado = interpolation_search(sorted_grades, len(sorted_grades), nota_procurada)
+
+if resultado != -1:
+    print(f"Nota {nota_procurada} encontrada no índice {resultado}")
+else:
+    print(f"Nota {nota_procurada} não encontrada na lista")
+
+
