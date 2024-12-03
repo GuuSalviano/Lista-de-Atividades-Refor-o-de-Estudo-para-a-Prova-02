@@ -1,0 +1,63 @@
+def shell_sort_shell(arr):
+    n = len(arr)
+    gap = n // 2
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap //= 2
+
+# Exemplo de uso
+arr = [9, 8, 3, 7, 5, 6, 4, 1]
+shell_sort_shell(arr)
+print("Ordenado com sequência de Shell:", arr)
+
+
+def shell_sort_knuth(arr):
+    n = len(arr)
+    gap = 1
+    while gap < n // 3:
+        gap = 3 * gap + 1
+
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap //= 3
+
+# Exemplo de uso
+arr = [9, 8, 3, 7, 5, 6, 4, 1]
+shell_sort_knuth(arr)
+print("Ordenado com sequência de Knuth:", arr)
+
+
+def shell_sort_hibbard(arr):
+    n = len(arr)
+    gap = 1
+    gaps = []
+    while gap < n:
+        gaps.append(gap)
+        gap = 2 * gap + 1
+
+    gaps.reverse()  # Invertendo a lista de gaps para usar do maior para o menor
+    for gap in gaps:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+
+# Exemplo de uso
+arr = [9, 8, 3, 7, 5, 6, 4, 1]
+shell_sort_hibbard(arr)
+print("Ordenado com sequência de Hibbard:", arr)
