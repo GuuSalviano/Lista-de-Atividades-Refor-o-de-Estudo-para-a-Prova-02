@@ -1,0 +1,28 @@
+def interpolation_search(arr, target):
+
+left, right = 0, len(arr) - 1
+
+    while left <= right and target >= arr[left] and target <= arr[right]:
+        
+        pos = left + ((right - left) // (arr[right] - arr[left]) * (target - arr[left]))
+
+        if pos < left or pos > right: 
+            return -1
+
+        if arr[pos] == target:
+            return pos
+        elif arr[pos] < target:
+            left = pos + 1
+        else:
+            right = pos - 1
+
+    return -1  
+
+
+
+uniform_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+non_uniform_list = [1, 5, 10, 20, 50, 70, 90, 120, 150, 200]
+target_uniform = 70
+target_non_uniform = 90
+
+Resultado: (6, 6, 6, 6)
