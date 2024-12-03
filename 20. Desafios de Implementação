@@ -1,0 +1,188 @@
+import time
+
+# Funções de ordenação
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+
+def bucket_sort(grades):
+    max_val = 100
+    size = max_val // len(grades)
+
+    buckets = [[] for _ in range(len(grades))]
+
+    for grade in grades:
+        i = grade // size
+        if i != len(grades):
+            buckets[i].append(grade)
+        else:
+            buckets[len(grades) - 1].append(grade)
+
+    for bucket in buckets:
+        insertion_sort(bucket)
+
+    sorted_grades = []
+    for bucket in buckets:
+        sorted_grades.extend(bucket)
+
+    return sorted_grades
+
+def merge_sort(arr):
+    if len(arr) > 1:
+        mid = len(arr) // 2
+        left_half = arr[:mid]
+        right_half = arr[mid:]
+
+        merge_sort(left_half)
+        merge_sort(right_half)
+
+        i = j = k = 0
+        while i < len(left_half) and j < len(right_half):
+            if left_half[i] < right_half[j]:
+                arr[k] = left_half[i]
+                i += 1
+            else:
+                arr[k] = right_half[j]
+                j += 1
+            k += 1
+
+        while i < len(left_half):
+            arr[k] = left_half[i]
+            i += 1
+            k += 1
+
+        while j < len(right_half):
+            arr[k] = right_half[j]
+            j += 1
+            k += 1
+
+def quick_sort(arr, low, high):
+    if low < high:
+        pi = partition(arr, low, high)
+        quick_sort(arr, low, pi - 1)
+        quick_sort(arr, pi + 1, high)
+
+def partition(arr, low, high):
+    pivot = arr[high]
+    i = low - 1
+    for j in range(low, high):
+        if arr[j] <= pivot:
+            i += 1
+            arr[i], arr[j] = arr[j], arr[i]
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
+    return i + 1
+
+def radix_sort(arr):
+    max_num = max(arr)
+    exp = 1
+    while max_num // exp > 0:
+        counting_sort(arr, exp)
+        exp *= 10
+
+def counting_sort(arr, exp):
+    n = len(arr)
+    output = [0] * n
+    count = [0] * 10
+
+    for i in range(n):
+        index = arr[i] // exp
+        count[index % 10] += 1
+
+    for i in range(1, 10):
+        count[i] += count[i - 1]
+
+    i = n - 1
+    while i >= 0:
+        index = arr[i] // exp
+        output[count[index % 10] - 1] = arr[i]
+        count[index % 10] -= 1
+        i -= 1
+
+    for i in range(n):
+        arr[i] = output[i]
+
+# Funções de busca
+def binary_search(arr, left, right, x):
+    while left <= right:
+        mid = left + (right - left) // 2
+        if arr[mid] == x:
+            return mid
+        elif arr[mid] < x:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+
+def interpolation_search(arr, n, x):
+    low = 0
+    high = n - 1
+
+    while low <= high and x >= arr[low] and x <= arr[high]:
+        if low == high:
+            if arr[low] == x:
+                return low
+            return -1
+
+        pos = low + int(((float(high - low) / (arr[high] - arr[low])) * (x - arr[low])))
+
+        if arr[pos] == x:
+            return pos
+        if arr[pos] < x:
+            low = pos + 1
+        else:
+            high = pos - 1
+
+    return -1
+
+# Função para comparação de algoritmos
+def compare_algorithms(arr, search_method=None, search_element=None):
+    algorithms = {
+        'bucket_sort': bucket_sort,
+        'merge_sort': merge_sort,
+        'quick_sort': quick_sort,
+        'radix_sort': radix_sort
+    }
+
+    results = {}
+    for name, func in algorithms.items():
+        arr_copy = arr.copy()
+        start_time = time.time()
+        if name == 'quick_sort':
+            func(arr_copy, 0, len(arr_copy) - 1)
+        else:
+            func(arr_copy)
+        end_time = time.time()
+        duration = end_time - start_time
+        results[name] = {'sorted_array': arr_copy, 'time': duration}
+
+    if search_method and search_element is not None:
+        if search_method == 'binary_search':
+            sorted_arr = sorted(arr)
+            index = binary_search(sorted_arr, 0, len(sorted_arr) - 1, search_element)
+        elif search_method == 'interpolation_search':
+            sorted_arr = sorted(arr)
+            index = interpolation_search(sorted_arr, len(sorted_arr), search_element)
+        results['search'] = {'method': search_method, 'index': index, 'sorted_array': sorted_arr}
+
+    return results
+
+# Exemplo de uso
+arr = [88, 95, 70, 55, 68, 91, 85, 77, 60, 94, 100, 82, 89, 73]
+search_element = 91
+
+comparison_results = compare_algorithms(arr, 'binary_search', search_element)
+
+print("Comparação de Algoritmos:")
+for key, value in comparison_results.items():
+    if key == 'search':
+        print(f"\nBusca - Método: {value['method']}")
+        print(f"Elemento {search_element} encontrado no índice: {value['index']}")
+    else:
+        print(f"\nAlgoritmo: {key}")
+        print(f"Array Ordenado: {value['sorted_array']}")
+        print(f"Tempo de Execução: {value['time']} segundos")
